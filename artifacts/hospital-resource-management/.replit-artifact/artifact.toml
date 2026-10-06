@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Hospital Resource Management"
+description = "A hospital operations dashboard for managing ICU capacity, oxygen and ventilator equipment, medicines, blood inventory, alerts, audit history, and resource-risk analysis."
+version = "1.0.0"
+id = "artifacts/hospital-resource-management"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23328
+
+[services.development]
+run = "pnpm --filter @workspace/hospital-resource-management run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/hospital-resource-management", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/hospital-resource-management/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23328"
+BASE_PATH = "/"

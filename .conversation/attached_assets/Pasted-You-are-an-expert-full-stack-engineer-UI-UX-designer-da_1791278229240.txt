@@ -1,0 +1,2219 @@
+You are an expert full-stack engineer, UI/UX designer, database architect, security engineer, and AI application developer.
+
+I want you to BUILD THE COMPLETE FULL-STACK APPLICATION, not just a UI prototype.
+
+PROJECT NAME:
+Hospital Resource Management System
+
+PROJECT TYPE:
+Healthcare resource monitoring and management dashboard for hospitals.
+
+IMPORTANT:
+This is a hackathon project and must look like a professional, production-quality SaaS healthcare dashboard.
+
+Do NOT create a simple generic CRUD application.
+
+The application must have:
+- Modern and unique UI/UX
+- Smooth animations
+- Micro-interactions
+- Responsive design
+- Professional healthcare dashboard
+- Real authentication
+- Real database
+- Real CRUD
+- Search/filter/sort
+- Resource history
+- Alerts
+- AI-powered analysis
+- Secure backend
+- Supabase PostgreSQL
+- Row Level Security
+- Gemini AI through backend only
+- No permanent fake/mock data
+- Fully working frontend + backend + database connection
+
+==================================================
+1. CORE PROBLEM
+==================================================
+
+Create a dashboard for hospitals to monitor:
+
+1. ICU beds
+2. Oxygen equipment
+3. Ventilators
+4. Medicines
+5. Blood units
+6. Other critical hospital resources
+
+The system should help hospital staff quickly understand:
+
+- What resources are available?
+- What resources are being used?
+- What resources are low?
+- What resources are critical?
+- What needs attention?
+- What resources are expiring?
+- What actions should hospital staff take?
+
+The application should transform raw resource data into an easy-to-understand visual dashboard.
+
+==================================================
+2. REQUIRED TECHNOLOGY
+==================================================
+
+Frontend:
+- React.js
+- Vite
+- React Router
+- Tailwind CSS
+- Lucide React icons
+- Axios or Fetch
+- Recharts
+- Framer Motion
+
+Backend:
+- Node.js
+- Express.js
+- REST API
+- JWT authentication
+- bcrypt password hashing
+- Zod validation
+- Helmet
+- CORS
+- Rate limiting
+
+Database:
+- Supabase PostgreSQL
+- Supabase Row Level Security (RLS)
+
+AI:
+- Google Gemini API
+- @google/genai
+- Gemini API calls MUST happen from the backend only
+
+Development:
+- Replit
+
+Version control:
+- Git/GitHub compatible structure
+
+Deployment-ready:
+- Replit deployment
+- Vercel-compatible frontend
+- Render-compatible backend if separated later
+
+==================================================
+3. VERY IMPORTANT ARCHITECTURE
+==================================================
+
+Use this architecture:
+
+Browser
+   ↓
+React + Vite frontend
+   ↓
+Node.js + Express REST API
+   ↓
+Supabase PostgreSQL
+   ↓
+Gemini API for AI analysis
+
+Supabase should be used for:
+- PostgreSQL database
+- Row Level Security
+- Database management
+- Optional storage if required
+
+Express should be used for:
+- Application backend
+- Authentication
+- JWT
+- bcrypt
+- API routes
+- Validation
+- Authorization
+- Resource CRUD
+- Business logic
+- AI requests
+- Error handling
+
+DO NOT put Gemini API keys in the frontend.
+
+DO NOT call Gemini directly from React.
+
+DO NOT put database passwords or secret keys in frontend environment variables.
+
+==================================================
+4. PROJECT STRUCTURE
+==================================================
+
+Create a clean structure similar to:
+
+hospital-resource-management/
+
+frontend/
+  src/
+    components/
+    pages/
+    layouts/
+    hooks/
+    context/
+    services/
+    utils/
+    charts/
+    animations/
+    App.jsx
+    main.jsx
+
+backend/
+  src/
+    controllers/
+    routes/
+    middleware/
+    services/
+    validators/
+    utils/
+    config/
+    db/
+    server.js
+
+supabase/
+  migrations/
+  seed/
+  tests/
+
+docs/
+
+README.md
+
+.env.example
+
+.gitignore
+
+Use a clean modular architecture.
+
+Do not put everything inside one giant file.
+
+==================================================
+5. DATABASE DESIGN
+==================================================
+
+Create the following PostgreSQL tables in Supabase.
+
+-------------------------
+users / profiles
+-------------------------
+
+Use a secure user profile system.
+
+Fields:
+
+id
+name
+email
+password_hash
+hospital_name
+role
+phone
+avatar_url
+created_at
+updated_at
+
+Roles:
+
+ADMIN
+HOSPITAL_MANAGER
+STAFF
+
+Passwords must NEVER be stored as plain text.
+
+Use bcrypt.
+
+-------------------------
+icu_beds
+-------------------------
+
+id
+user_id
+total_beds
+occupied_beds
+available_beds
+location
+status
+created_at
+updated_at
+archived_at
+
+Available beds should be calculated correctly.
+
+Validation:
+occupied_beds cannot exceed total_beds.
+
+-------------------------
+oxygen_equipment
+-------------------------
+
+id
+user_id
+equipment_type
+total_units
+available_units
+in_use_units
+location
+status
+created_at
+updated_at
+archived_at
+
+Examples:
+- Oxygen cylinders
+- Oxygen concentrators
+- Oxygen generators
+
+-------------------------
+ventilators
+-------------------------
+
+id
+user_id
+model
+total_units
+available_units
+in_use_units
+maintenance_count
+location
+status
+created_at
+updated_at
+archived_at
+
+-------------------------
+medicines
+-------------------------
+
+id
+user_id
+name
+category
+quantity
+unit
+reorder_level
+expiry_date
+location
+status
+created_at
+updated_at
+archived_at
+
+Examples:
+- Antibiotics
+- Emergency medicines
+- IV fluids
+- Pain medication
+
+System should automatically identify:
+
+LOW STOCK
+CRITICAL STOCK
+EXPIRING SOON
+EXPIRED
+
+-------------------------
+blood_units
+-------------------------
+
+id
+user_id
+blood_group
+quantity
+expiry_date
+storage_location
+status
+created_at
+updated_at
+archived_at
+
+Blood groups:
+
+A+
+A-
+B+
+B-
+AB+
+AB-
+O+
+O-
+
+Automatically calculate:
+- total units
+- low inventory
+- expiring inventory
+- expired inventory
+
+-------------------------
+resource_history
+-------------------------
+
+id
+user_id
+resource_type
+resource_id
+action
+previous_data
+new_data
+created_at
+
+Record:
+CREATE
+UPDATE
+DELETE
+ARCHIVE
+RESTORE
+
+-------------------------
+alerts
+-------------------------
+
+id
+user_id
+resource_type
+resource_id
+severity
+title
+message
+is_read
+created_at
+
+Severity:
+
+INFO
+WARNING
+HIGH
+CRITICAL
+
+-------------------------
+ai_outputs
+-------------------------
+
+id
+user_id
+analysis_type
+input_snapshot
+output_json
+risk_level
+created_at
+
+Store previous AI analyses.
+
+==================================================
+6. SUPABASE SECURITY
+==================================================
+
+Enable Row Level Security for every user-owned table.
+
+Every user-owned table must contain user_id.
+
+Users must only be able to access their own hospital/resource records.
+
+Never trust user_id coming from the frontend.
+
+Get the authenticated user identity from the JWT on the backend.
+
+Implement proper RLS policies.
+
+Test that:
+
+User A cannot access User B's records.
+
+Users cannot update another user's resources.
+
+Users cannot delete another user's records.
+
+Users cannot access another hospital's private data.
+
+Never expose Supabase secret/service keys in frontend code.
+
+==================================================
+7. AUTHENTICATION
+==================================================
+
+Create:
+
+POST /api/auth/register
+POST /api/auth/login
+POST /api/auth/logout
+GET /api/auth/me
+
+Registration:
+
+Name
+Email
+Password
+Hospital Name
+Role
+
+Login:
+
+Email
+Password
+
+Use:
+
+bcrypt
+
+JWT
+
+HTTP-only secure cookies where appropriate.
+
+Protected routes must require authentication.
+
+Implement:
+
+auth middleware
+role middleware
+authorization checks
+
+Never store plaintext passwords.
+
+==================================================
+8. PROFILE MANAGEMENT
+==================================================
+
+Create:
+
+GET /api/profile
+PUT /api/profile
+
+Allow users to update:
+
+Name
+Hospital name
+Phone
+Avatar
+
+Allow password change securely.
+
+==================================================
+9. RESOURCE APIs
+==================================================
+
+Create secure REST APIs.
+
+ICU:
+
+GET /api/resources/icu-beds
+POST /api/resources/icu-beds
+GET /api/resources/icu-beds/:id
+PUT /api/resources/icu-beds/:id
+DELETE /api/resources/icu-beds/:id
+
+Oxygen:
+
+GET /api/resources/oxygen
+POST /api/resources/oxygen
+GET /api/resources/oxygen/:id
+PUT /api/resources/oxygen/:id
+DELETE /api/resources/oxygen/:id
+
+Ventilators:
+
+GET /api/resources/ventilators
+POST /api/resources/ventilators
+GET /api/resources/ventilators/:id
+PUT /api/resources/ventilators/:id
+DELETE /api/resources/ventilators/:id
+
+Medicines:
+
+GET /api/resources/medicines
+POST /api/resources/medicines
+GET /api/resources/medicines/:id
+PUT /api/resources/medicines/:id
+DELETE /api/resources/medicines/:id
+
+Blood:
+
+GET /api/resources/blood
+POST /api/resources/blood
+GET /api/resources/blood/:id
+PUT /api/resources/blood/:id
+DELETE /api/resources/blood/:id
+
+Every mutation must create a resource_history record.
+
+==================================================
+10. SEARCH / FILTER / SORT
+==================================================
+
+Every resource page must support:
+
+Search
+Filter
+Sort
+Pagination
+
+Examples:
+
+Medicine:
+- Search by name
+- Filter category
+- Filter stock status
+- Filter expiry
+
+Blood:
+- Search blood group
+- Filter blood group
+- Filter expiry
+- Filter availability
+
+Ventilator:
+- Search model
+- Filter location
+- Filter availability
+- Filter maintenance
+
+ICU:
+- Filter location
+- Filter occupancy
+- Filter status
+
+Oxygen:
+- Search equipment
+- Filter type
+- Filter availability
+
+==================================================
+11. DASHBOARD
+==================================================
+
+Create a beautiful main dashboard.
+
+The dashboard should contain:
+
+Top navigation:
+
+Hospital logo/name
+Search
+Notifications
+User profile
+Theme toggle
+
+Sidebar:
+
+Dashboard
+ICU Beds
+Oxygen Equipment
+Ventilators
+Medicines
+Blood Bank
+History
+AI Analysis
+Alerts
+Profile
+Settings
+Logout
+
+Main dashboard:
+
+Welcome section:
+
+"Good morning, [Name]"
+
+Show hospital name.
+
+Show current date.
+
+Then create KPI cards:
+
+ICU Beds
+Available
+Occupied
+Occupancy %
+
+Oxygen
+Available
+In Use
+
+Ventilators
+Available
+In Use
+Maintenance
+
+Medicines
+Total Items
+Low Stock
+Expiring Soon
+
+Blood Bank
+Total Units
+Low Stock
+Expiring Soon
+
+==================================================
+12. DASHBOARD VISUALIZATION
+==================================================
+
+Use Recharts.
+
+Create:
+
+ICU occupancy chart
+Resource utilization chart
+Medicine stock chart
+Blood group distribution
+Resource status distribution
+Historical resource activity chart
+
+Charts should have:
+
+- Tooltips
+- Legends
+- Responsive sizing
+- Smooth animation
+- Clear labels
+
+Do NOT overload the dashboard with charts.
+
+Prioritize important information.
+
+==================================================
+13. ALERT CENTER
+==================================================
+
+Create an intelligent alert section.
+
+Examples:
+
+"Only 2 ICU beds available"
+
+"Ventilator availability is critically low"
+
+"12 medicine items below reorder level"
+
+"8 blood units expire within 7 days"
+
+"5 oxygen cylinders require attention"
+
+Use severity:
+
+INFO
+WARNING
+HIGH
+CRITICAL
+
+Each alert should have:
+
+Icon
+Title
+Description
+Timestamp
+Severity
+Action button
+
+Example:
+
+"View Medicines"
+
+"View ICU"
+
+"View Blood Bank"
+
+Allow users to mark alerts as read.
+
+==================================================
+14. RESOURCE STATUS LOGIC
+==================================================
+
+Implement meaningful status calculation.
+
+Example ICU:
+
+>= 30% available:
+GOOD
+
+10%-29% available:
+WARNING
+
+< 10% available:
+CRITICAL
+
+Medicines:
+
+quantity > reorder_level:
+GOOD
+
+quantity <= reorder_level:
+WARNING
+
+quantity <= 50% of reorder_level:
+CRITICAL
+
+Expiry:
+
+expired:
+CRITICAL
+
+expires within 7 days:
+HIGH
+
+expires within 30 days:
+WARNING
+
+Blood should use similar intelligent thresholds.
+
+Do not hardcode fake dashboard numbers.
+
+Calculate statuses from actual database data.
+
+==================================================
+15. ICU PAGE
+==================================================
+
+Create a professional ICU resource page.
+
+Show:
+
+Total beds
+Occupied beds
+Available beds
+Occupancy rate
+
+Visual:
+
+Large occupancy visualization
+
+Bed grid:
+
+Available
+Occupied
+Reserved
+Maintenance
+
+Allow:
+
+Add ICU record
+Edit
+Delete
+Archive
+
+Show confirmation modal before destructive actions.
+
+Use animated transitions.
+
+==================================================
+16. OXYGEN PAGE
+==================================================
+
+Create oxygen equipment management.
+
+Cards:
+
+Total equipment
+Available
+In use
+Maintenance
+
+Table:
+
+Equipment
+Type
+Location
+Total
+Available
+In Use
+Status
+Last Updated
+Actions
+
+Add/Edit/Delete modal.
+
+Search/filter/sort.
+
+==================================================
+17. VENTILATOR PAGE
+==================================================
+
+Show:
+
+Total ventilators
+Available
+In use
+Maintenance
+
+Table with:
+
+Model
+Location
+Availability
+Maintenance count
+Status
+Last updated
+
+Include maintenance indicator.
+
+Allow editing and archiving.
+
+==================================================
+18. MEDICINE PAGE
+==================================================
+
+Create a professional medicine inventory system.
+
+Show:
+
+Total medicines
+Low stock
+Critical stock
+Expiring soon
+Expired
+
+Table:
+
+Medicine
+Category
+Quantity
+Unit
+Reorder Level
+Expiry
+Location
+Status
+Actions
+
+Use badges:
+
+In Stock
+Low Stock
+Critical
+Expiring
+Expired
+
+Add medicine form.
+
+Edit medicine.
+
+Delete medicine.
+
+Archive medicine.
+
+==================================================
+19. BLOOD BANK PAGE
+==================================================
+
+Create an attractive blood bank dashboard.
+
+Show blood group cards:
+
+A+
+A-
+B+
+B-
+AB+
+AB-
+O+
+O-
+
+Each card shows:
+
+Available units
+Status
+Expiry warning
+
+Create blood inventory table.
+
+Allow:
+
+Add units
+Update units
+Delete record
+Filter group
+Filter expiry
+
+Use appropriate healthcare visuals.
+
+==================================================
+20. RESOURCE HISTORY
+==================================================
+
+Create history page.
+
+Show:
+
+Who performed action
+Resource
+Action
+Previous value
+New value
+Date/time
+
+Example:
+
+"John updated ICU beds"
+
+"Available beds changed from 8 → 6"
+
+Use timeline UI.
+
+Allow:
+
+Search
+Filter
+Date range
+
+==================================================
+21. AI FEATURES
+==================================================
+
+Integrate Google Gemini.
+
+IMPORTANT:
+
+Gemini API must ONLY be called from the backend.
+
+Never expose GEMINI_API_KEY in React.
+
+Create:
+
+POST /api/ai/analyze
+
+POST /api/ai/action-plan
+
+POST /api/ai/checklist
+
+GET /api/ai/history
+
+==================================================
+22. AI RESOURCE ANALYSIS
+==================================================
+
+Collect REAL resource data from Supabase.
+
+Send structured resource information to Gemini.
+
+Ask Gemini to analyze:
+
+ICU capacity
+Oxygen availability
+Ventilator availability
+Medicine inventory
+Blood inventory
+Expiry risks
+Potential shortages
+
+Gemini should return STRICT JSON.
+
+Example:
+
+{
+  "summary": "string",
+  "riskLevel": "LOW | MEDIUM | HIGH | CRITICAL",
+  "criticalResources": [
+    {
+      "resourceType": "string",
+      "reason": "string"
+    }
+  ],
+  "recommendedActions": [
+    {
+      "priority": "HIGH | MEDIUM | LOW",
+      "action": "string",
+      "reason": "string"
+    }
+  ],
+  "checklist": [
+    {
+      "task": "string",
+      "priority": "HIGH | MEDIUM | LOW"
+    }
+  ]
+}
+
+Validate Gemini output before sending it to frontend.
+
+Store AI results in ai_outputs.
+
+==================================================
+23. AI DASHBOARD
+==================================================
+
+Create an impressive AI Analysis page.
+
+Header:
+
+"AI Resource Intelligence"
+
+Subtitle:
+
+"Understand your hospital's resource risks before they become critical."
+
+Create button:
+
+"Run AI Analysis"
+
+When clicked:
+
+Show animated loading state.
+
+Then display:
+
+Overall Risk
+
+LOW
+MEDIUM
+HIGH
+CRITICAL
+
+Summary card.
+
+Critical Resources.
+
+Recommended Actions.
+
+Action checklist.
+
+Each recommendation should have:
+
+Priority
+Action
+Reason
+
+Add "Run New Analysis" button.
+
+Show analysis history.
+
+==================================================
+24. AI CHECKLIST
+==================================================
+
+Create an actionable checklist.
+
+Example:
+
+[ ] Review ICU availability
+[ ] Reorder critical medicines
+[ ] Inspect ventilators
+[ ] Verify oxygen equipment
+[ ] Check expiring blood units
+
+Allow user to mark checklist items complete.
+
+Use animations.
+
+==================================================
+25. UI / UX DESIGN
+==================================================
+
+This is VERY IMPORTANT.
+
+Do NOT make the application look like a default Tailwind template.
+
+Create a unique premium healthcare SaaS interface.
+
+Design inspiration:
+
+Modern hospital command center
+Enterprise SaaS dashboard
+Clean medical technology interface
+
+Use:
+
+- Clean typography
+- Strong visual hierarchy
+- Rounded cards
+- Subtle shadows
+- Glass-like elements where appropriate
+- Professional icons
+- Clear status colors
+- Spacious layouts
+- Responsive grid
+- Smooth transitions
+
+Suggested visual identity:
+
+Primary:
+Deep navy / blue
+
+Secondary:
+Medical teal
+
+Success:
+Green
+
+Warning:
+Amber
+
+Critical:
+Red
+
+Background:
+Very light neutral
+
+Dark mode should also be supported.
+
+==================================================
+26. ANIMATIONS
+==================================================
+
+Use Framer Motion.
+
+Animations should be professional, NOT excessive.
+
+Add:
+
+Page transitions
+
+Sidebar transitions
+
+Card entrance animations
+
+Dashboard KPI count animations
+
+Chart entrance animations
+
+Modal animations
+
+Dropdown animations
+
+Hover effects
+
+Button press feedback
+
+Notification animations
+
+Loading skeletons
+
+AI analysis loading animation
+
+Success animation
+
+Error shake animation
+
+Table row hover animation
+
+Timeline animations
+
+Use staggered animation for dashboard cards.
+
+Respect:
+
+prefers-reduced-motion
+
+for accessibility.
+
+==================================================
+27. MICRO INTERACTIONS
+==================================================
+
+Add subtle interactions:
+
+Buttons respond on hover.
+
+Cards slightly elevate on hover.
+
+Status badges have subtle indicators.
+
+Tooltips for unfamiliar icons.
+
+Copy-to-clipboard where useful.
+
+Toast notifications after:
+
+Create
+Update
+Delete
+Archive
+Login
+Logout
+AI analysis
+
+Use meaningful success/error messages.
+
+==================================================
+28. LOADING STATES
+==================================================
+
+Never show blank screens.
+
+Create:
+
+Skeleton loaders
+
+Spinner states
+
+Progress indicators
+
+Empty states
+
+Error states
+
+Examples:
+
+"No medicines found"
+
+"No blood records available"
+
+"No alerts"
+
+"No history available"
+
+Make empty states visually attractive.
+
+==================================================
+29. ERROR HANDLING
+==================================================
+
+Backend:
+
+Central error middleware.
+
+Use correct HTTP status codes.
+
+400 validation error
+
+401 authentication error
+
+403 authorization error
+
+404 not found
+
+409 conflict
+
+429 rate limit
+
+500 server error
+
+Return clean JSON:
+
+{
+  "success": false,
+  "message": "Human readable message"
+}
+
+Frontend must display friendly errors.
+
+Never expose stack traces to users.
+
+==================================================
+30. VALIDATION
+==================================================
+
+Use Zod.
+
+Validate:
+
+Registration
+Login
+Profile
+ICU
+Oxygen
+Ventilators
+Medicines
+Blood
+AI requests
+
+Examples:
+
+Negative quantity must be rejected.
+
+Occupied ICU beds cannot exceed total beds.
+
+Available equipment cannot exceed total equipment.
+
+Expiry date must be valid.
+
+Email must be valid.
+
+Password must meet minimum security requirements.
+
+==================================================
+31. SECURITY
+==================================================
+
+Implement:
+
+bcrypt
+
+JWT
+
+HTTP-only cookies if appropriate
+
+Helmet
+
+CORS
+
+Rate limiting
+
+Zod validation
+
+Authorization middleware
+
+RLS
+
+Secure environment variables
+
+No secrets in frontend
+
+No secrets in Git
+
+No SQL injection
+
+No trusting user_id from request body
+
+No exposing internal errors
+
+Do not expose Gemini key.
+
+Do not expose Supabase secret/service key.
+
+==================================================
+32. ENVIRONMENT VARIABLES
+==================================================
+
+Create .env.example files.
+
+Backend:
+
+PORT=5000
+
+JWT_SECRET=
+
+SUPABASE_URL=
+
+SUPABASE_PUBLISHABLE_KEY=
+
+SUPABASE_SECRET_KEY=
+
+GEMINI_API_KEY=
+
+CLIENT_URL=
+
+Frontend:
+
+VITE_API_BASE_URL=
+
+Do NOT hardcode real secrets.
+
+Use Replit Secrets for actual values.
+
+Never commit .env.
+
+==================================================
+33. SUPABASE CONNECTION
+==================================================
+
+Connect the backend to Supabase PostgreSQL.
+
+Create SQL migrations.
+
+Create:
+
+tables
+indexes
+foreign keys
+constraints
+RLS policies
+
+Add useful indexes for:
+
+user_id
+
+created_at
+
+expiry_date
+
+status
+
+resource_type
+
+email
+
+Test all database operations.
+
+==================================================
+34. SEED DATA
+==================================================
+
+Create an OPTIONAL development seed script.
+
+Seed realistic demo data ONLY for development.
+
+Example:
+
+ICU:
+50 total
+37 occupied
+13 available
+
+Oxygen:
+100 total
+62 available
+38 in use
+
+Ventilators:
+20 total
+7 available
+13 in use
+
+Medicines:
+Realistic inventory examples
+
+Blood:
+Realistic blood groups
+
+IMPORTANT:
+
+Demo data must be clearly marked as development/demo data.
+
+Production dashboard must always read from the real database.
+
+Do not permanently hardcode dashboard numbers.
+
+==================================================
+35. RESPONSIVE DESIGN
+==================================================
+
+The application must work on:
+
+Desktop
+Laptop
+Tablet
+Mobile
+
+Desktop:
+Sidebar visible.
+
+Tablet:
+Collapsible sidebar.
+
+Mobile:
+Bottom navigation or hamburger menu.
+
+Tables should become responsive cards on mobile where necessary.
+
+Do not allow horizontal overflow.
+
+==================================================
+36. ACCESSIBILITY
+==================================================
+
+Implement:
+
+Semantic HTML
+
+Keyboard navigation
+
+Visible focus states
+
+ARIA labels
+
+Accessible forms
+
+Accessible dialogs
+
+Good contrast
+
+Screen reader friendly labels
+
+Do not rely only on color to indicate status.
+
+Example:
+
+Critical status should use:
+icon + text + color
+
+==================================================
+37. PROFILE PAGE
+==================================================
+
+Create:
+
+Profile information
+
+Hospital information
+
+Role
+
+Account settings
+
+Change password
+
+Avatar
+
+Activity information
+
+==================================================
+38. SETTINGS
+==================================================
+
+Settings page:
+
+Theme:
+Light
+Dark
+System
+
+Notifications:
+
+Critical alerts
+Medicine alerts
+Blood expiry alerts
+AI recommendations
+
+Account:
+
+Change password
+Logout
+
+==================================================
+39. NOTIFICATION SYSTEM
+==================================================
+
+Create notification dropdown.
+
+Show:
+
+Critical resource alerts
+Low stock
+Expiring medicine
+Expiring blood
+AI recommendations
+
+Unread count.
+
+Mark as read.
+
+"View all alerts"
+
+==================================================
+40. SEARCH
+==================================================
+
+Create global search.
+
+Search:
+
+Resources
+Medicines
+Blood
+Ventilators
+Oxygen
+History
+
+Show search results in a dropdown.
+
+Keyboard navigation.
+
+==================================================
+41. DASHBOARD QUICK ACTIONS
+==================================================
+
+Create Quick Actions:
+
++ Add ICU Record
+
++ Add Medicine
+
++ Add Blood Units
+
++ Add Oxygen Equipment
+
++ Add Ventilator
+
+Run AI Analysis
+
+Each action opens the correct form/modal.
+
+==================================================
+42. MODALS
+==================================================
+
+Create reusable modal component.
+
+Forms should have:
+
+Labels
+Validation
+Error messages
+Loading state
+Cancel
+Save
+
+Destructive actions require confirmation.
+
+Example:
+
+"Are you sure you want to delete this medicine?"
+
+==================================================
+43. TOAST SYSTEM
+==================================================
+
+Create reusable toast system.
+
+Examples:
+
+"Medicine added successfully."
+
+"Resource updated successfully."
+
+"Blood inventory updated."
+
+"AI analysis completed."
+
+"Unable to save changes."
+
+==================================================
+44. EMPTY STATES
+==================================================
+
+Every page must have a professional empty state.
+
+Example:
+
+"No ICU records yet"
+
+Add:
+
+Icon
+Description
+Primary action button
+
+==================================================
+45. DATA CONSISTENCY
+==================================================
+
+Do not allow invalid resource states.
+
+Examples:
+
+total >= occupied
+
+total >= available
+
+total >= in_use
+
+quantity >= 0
+
+available = total - occupied where appropriate
+
+Do not allow negative values.
+
+Use database constraints where appropriate.
+
+==================================================
+46. API RESPONSE FORMAT
+==================================================
+
+Use consistent API responses.
+
+Success:
+
+{
+  "success": true,
+  "data": {}
+}
+
+Error:
+
+{
+  "success": false,
+  "message": "Something went wrong"
+}
+
+Lists:
+
+{
+  "success": true,
+  "data": [],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 100
+  }
+}
+
+==================================================
+47. PERFORMANCE
+==================================================
+
+Optimize:
+
+Database queries
+
+Indexes
+
+API calls
+
+React rendering
+
+Chart rendering
+
+Images
+
+Bundle size
+
+Use lazy loading for pages where appropriate.
+
+Avoid unnecessary API requests.
+
+Use proper loading states.
+
+==================================================
+48. CODE QUALITY
+==================================================
+
+Write clean maintainable code.
+
+Avoid:
+
+Huge components
+
+Duplicate logic
+
+Hardcoded values
+
+Dead code
+
+Unused imports
+
+Console errors
+
+Fake API responses
+
+Temporary hacks
+
+Use reusable components.
+
+==================================================
+49. TESTING
+==================================================
+
+Before declaring the project complete, test:
+
+Registration
+
+Login
+
+Logout
+
+Protected routes
+
+Profile
+
+ICU CRUD
+
+Oxygen CRUD
+
+Ventilator CRUD
+
+Medicine CRUD
+
+Blood CRUD
+
+Search
+
+Filtering
+
+Sorting
+
+History
+
+Alerts
+
+AI analysis
+
+AI history
+
+RLS
+
+Unauthorized access
+
+Invalid input
+
+Mobile layout
+
+Dark mode
+
+Error states
+
+Loading states
+
+==================================================
+50. IMPORTANT SECURITY TEST
+==================================================
+
+Create two users.
+
+User A should create resources.
+
+User B should NOT be able to see User A's resources.
+
+Test:
+
+GET
+
+POST
+
+PUT
+
+DELETE
+
+Make sure RLS and backend authorization both protect data.
+
+==================================================
+51. GITHUB READINESS
+==================================================
+
+Create:
+
+.gitignore
+
+.env.example
+
+README.md
+
+Do not commit:
+
+.env
+
+API keys
+
+Supabase secret keys
+
+Gemini API key
+
+JWT secrets
+
+node_modules
+
+Build files
+
+==================================================
+52. README
+==================================================
+
+Create a professional README containing:
+
+Project overview
+
+Features
+
+Architecture
+
+Technology stack
+
+Folder structure
+
+Database structure
+
+Environment variables
+
+Supabase setup
+
+Gemini setup
+
+Local development
+
+Replit setup
+
+Running frontend
+
+Running backend
+
+Database migration instructions
+
+Security notes
+
+Deployment instructions
+
+==================================================
+53. REPLIT CONFIGURATION
+==================================================
+
+Configure the project so it runs correctly inside Replit.
+
+Create appropriate:
+
+package.json
+
+scripts
+
+start commands
+
+development commands
+
+frontend/backend startup configuration
+
+If necessary use concurrently or another clean approach.
+
+The main Replit Run button should start the application correctly.
+
+==================================================
+54. NO FAKE IMPLEMENTATION
+==================================================
+
+THIS IS EXTREMELY IMPORTANT.
+
+Do NOT create a frontend-only demo.
+
+Do NOT create fake API calls.
+
+Do NOT use permanent mock JSON data.
+
+Do NOT hardcode dashboard numbers.
+
+Do NOT simulate login.
+
+Do NOT simulate AI.
+
+Do NOT create buttons that do nothing.
+
+Every important button must work.
+
+Every CRUD operation must communicate with the backend.
+
+Every backend operation must communicate with Supabase.
+
+AI must communicate with Gemini through the backend.
+
+==================================================
+55. IMPLEMENTATION STRATEGY
+==================================================
+
+Build the application in phases.
+
+PHASE 1:
+Project setup
+
+PHASE 2:
+Supabase database
+
+PHASE 3:
+RLS and security
+
+PHASE 4:
+Express backend
+
+PHASE 5:
+Authentication
+
+PHASE 6:
+Resource APIs
+
+PHASE 7:
+Frontend architecture
+
+PHASE 8:
+Authentication UI
+
+PHASE 9:
+Dashboard
+
+PHASE 10:
+Resource pages
+
+PHASE 11:
+Search/filter/sort
+
+PHASE 12:
+History and alerts
+
+PHASE 13:
+Gemini AI
+
+PHASE 14:
+AI dashboard
+
+PHASE 15:
+Animations and UI polish
+
+PHASE 16:
+Accessibility
+
+PHASE 17:
+Testing
+
+PHASE 18:
+Production readiness
+
+==================================================
+56. IMPORTANT AGENT BEHAVIOR
+==================================================
+
+You are authorized to create and modify the complete project.
+
+Do not stop after creating only the frontend.
+
+Do not stop after creating the database.
+
+Do not stop after creating the backend.
+
+Continue until the entire application is implemented.
+
+If you encounter an error:
+
+1. Read the error.
+2. Identify the root cause.
+3. Fix it.
+4. Run the relevant command again.
+5. Verify the fix.
+6. Continue.
+
+Do not simply tell me that there is an error.
+
+Fix the error yourself whenever possible.
+
+==================================================
+57. BEFORE CODING
+==================================================
+
+First inspect the current Replit workspace.
+
+Determine:
+
+Node version
+npm version
+existing files
+existing dependencies
+available environment configuration
+
+Then create the project structure.
+
+Do not unnecessarily overwrite existing useful files.
+
+==================================================
+58. AFTER EACH MAJOR PHASE
+==================================================
+
+Run:
+
+npm install
+
+build
+
+lint if configured
+
+tests if configured
+
+and relevant API/database checks.
+
+Fix errors before continuing.
+
+==================================================
+59. FINAL QUALITY CHECK
+==================================================
+
+Before saying the project is complete, verify:
+
+Frontend starts.
+
+Backend starts.
+
+Database connects.
+
+Registration works.
+
+Login works.
+
+JWT works.
+
+Protected routes work.
+
+CRUD works.
+
+Supabase RLS works.
+
+Search works.
+
+Filters work.
+
+Sorting works.
+
+Dashboard uses real database data.
+
+Charts use real data.
+
+Alerts work.
+
+History works.
+
+Gemini works through backend.
+
+AI results are stored.
+
+Responsive design works.
+
+Dark mode works.
+
+Animations work.
+
+No major console errors.
+
+No broken routes.
+
+No fake permanent data.
+
+No exposed secrets.
+
+==================================================
+60. FINAL RESULT
+==================================================
+
+The final application should feel like:
+
+A professional hospital operations command center.
+
+It should be visually impressive enough for a hackathon demonstration.
+
+The first screen after login should immediately communicate:
+
+"How is this hospital doing right now?"
+
+The user should be able to understand critical resources within seconds.
+
+Prioritize:
+
+Clarity
+Speed
+Safety
+Professional design
+Accessibility
+Real data
+Security
+AI-powered decision support
+
+Do not sacrifice functionality for visual design.
+
+Do not sacrifice security for convenience.
+
+Do not sacrifice usability for animations.
+
+==================================================
+START NOW
+==================================================
+
+Start by inspecting the Replit workspace.
+
+Then implement the complete application according to this specification.
+
+Do not give me a tutorial instead of building it.
+
+Build the actual project.
+
+When something requires configuration such as Supabase or Gemini credentials, create the required environment variable names and tell me exactly which secrets I need to add to Replit Secrets.
+
+At the end, provide:
+
+1. What was built
+2. Folder structure
+3. Supabase setup required
+4. Replit Secrets required
+5. How to run the project
+6. Test account/demo instructions
+7. API endpoints
+8. Any remaining configuration
+9. Any known limitations
+
+Most importantly:
+
+BUILD THE COMPLETE WORKING FULL-STACK HOSPITAL RESOURCE MANAGEMENT SYSTEM.
